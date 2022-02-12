@@ -24,7 +24,19 @@ nivel_bacia_tranquilizacao = client.write_single_register(
 sensor_valvula1 = client.write_single_register(3, valvula1.estado)
 nivel_tanque_floculacao = client.write_single_register(
     4, tanque_floculacao.nivel())
+sensor_agitador_floculacao = client.write_single_register(
+    5, agitador_floculacao.estado)
+sensor_valvula2 = client.write_single_register(6, valvula2.estado)
+nivel_tanque_decantacao = client.write_single_register(
+    7, tanque_decantacao.nivel())
+sensor_agitador_decantacao = client.write_single_register(
+    8, agitador_decantacao.estado)
+sensor_bomba_reservatorio = client.write_single_register(
+    9, bomba_reservatorio.estado)
+nivel_reservatorio = client.write_single_register(10, reservatorio.nivel())
 
+# alarme
+alarme_bacia_tranquilizacao = client.write_single_register(11, 0)
 
 # valvula3 = Valvula(2)  # saida do reservatorio
 
@@ -84,4 +96,27 @@ while True:
     sensor_valvula1 = client.write_single_register(3, valvula1.estado)
     nivel_tanque_floculacao = client.write_single_register(
         4, tanque_floculacao.nivel())
+    sensor_agitador_floculacao = client.write_single_register(
+        5, agitador_floculacao.estado)
+    sensor_valvula2 = client.write_single_register(6, valvula2.estado)
+    nivel_tanque_decantacao = client.write_single_register(
+        7, tanque_decantacao.nivel())
+    sensor_agitador_decantacao = client.write_single_register(
+        8, agitador_decantacao.estado)
+    sensor_bomba_reservatorio = client.write_single_register(
+        9, bomba_reservatorio.estado)
+    nivel_reservatorio = client.write_single_register(10, reservatorio.nivel())
+
+    # ativacao alarmes
+
+    if bacia_tranquilizacao.nivel() >= 90:
+        alarme_bacia_tranquilizacao = client.write_single_coil(11, 1)
+    else:
+        alarme_bacia_tranquilizacao = client.write_single_coil(11, 0)
+
+    if reservatorio.nivel() <= 10:
+        alarme_reservatorio = client.write_single_register(12, 1)
+    else:
+        alarme_reservatorio = client.write_single_register(12, 0)
+
     time.sleep(1)

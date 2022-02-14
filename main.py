@@ -16,6 +16,9 @@ agitador_decantacao = Agitador()
 bomba_reservatorio = Valvula(3)
 reservatorio = Tanque(100)
 
+
+ligar_processo = client.write_single_register(0, 0)
+
 # sensores
 
 sensor_bomba_captacao = client.write_single_register(1, bomba_captacao.estado)
@@ -35,20 +38,22 @@ sensor_bomba_reservatorio = client.write_single_register(
     9, bomba_reservatorio.estado)
 nivel_reservatorio = client.write_single_register(10, reservatorio.nivel())
 
+# controle de vazao
+
+vazao_reservatorio = client.write_single_register(13, 1)
+
 # alarme
 alarme_bacia_tranquilizacao = client.write_single_register(11, 0)
-
-# valvula3 = Valvula(2)  # saida do reservatorio
 
 
 while True:
     rio.fill()
-    # bomba_captacao.abrir()
 
-    if bacia_tranquilizacao.nivel() < 90:  # 0.9:
+    if bacia_tranquilizacao.nivel() < 90 and client.read_holding_registers(0)[0]:
         bomba_captacao.abrir()
     else:
         bomba_captacao.fechar()
+
     bomba_captacao.transferir(rio, bacia_tranquilizacao)
 
     if bacia_tranquilizacao.nivel() > 80:
@@ -81,7 +86,7 @@ while True:
     bomba_reservatorio.transferir(tanque_decantacao, reservatorio)
 
     if reservatorio.nivel() > 40:
-        reservatorio.esvaziar(1)
+        reservatorio.esvaziar(client.read_holding_registers(13)[0])
 
     print("#################")
     print("nivel bacia ", bacia_tranquilizacao.nivel())

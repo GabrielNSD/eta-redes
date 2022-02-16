@@ -85,7 +85,7 @@ while True:
 
     bomba_reservatorio.transferir(tanque_decantacao, reservatorio)
 
-    if reservatorio.nivel() > 40:
+    if reservatorio.nivel() > 1:
         reservatorio.esvaziar(client.read_holding_registers(13)[0])
 
     print("#################")
